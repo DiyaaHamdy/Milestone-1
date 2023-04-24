@@ -724,6 +724,307 @@ void plagiarism_check(brute_force& a)
     }
 
 }
+
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+using namespace std;
+struct index
+{
+    int sentence_x, sentence_y, index_x, index_y;
+};
+
+class file {
+private:
+    ifstream file_x, file_y;
+
+public:
+    virtual void readFile() = 0;
+    ifstream& const getx()
+    {
+        return file_x;
+    }
+    ifstream& const gety()
+    {
+        return file_y;
+    }
+    void setFile_x(string file)
+    {
+        file_x.open(file);
+    }
+    void setFile_y(string file)
+    {
+        file_y.open(file);
+    }
+};
+
+
+
+
+class brute_force :public file
+{
+private:
+    vector<char> filex, filey;
+    vector<index>plagiarised_sentences;
+    int threshold;
+public:
+    brute_force(string xfilename, string yfilename, int t)
+    {
+        setFile_x(xfilename);
+        setFile_y(yfilename);
+        readFile();
+        threshold = t;
+    }
+    void readFile()
+    {
+        cout << "first file content: " << endl;
+        char tempc;
+        int countspace = 0;
+        while (getx().get(tempc))
+        {
+            if (tempc == '\n')
+            {
+                tempc = ' ';
+            }
+            {
+                if (tempc == ' ')
+                {
+                    countspace++;
+                }
+                else
+                {
+                    countspace = 0;
+                }
+            }
+            if (countspace < 2)
+            {
+                filex.push_back(tempc);
+                cout << tempc;
+            }
+
+
+        }
+        countspace = 0;
+        cout << endl;
+        cout << endl << endl << endl;
+        cout << "file 2 content: " << endl;
+        while (gety().get(tempc))
+        {
+            if (tempc == '\n')
+            {
+                tempc = ' ';
+            }
+            {
+                if (tempc == ' ')
+                {
+                    countspace++;
+                }
+                else
+                {
+                    countspace = 0;
+                }
+            }
+            if (countspace < 2)
+            {
+                filey.push_back(tempc);
+                cout << tempc;
+            }
+
+        }
+    }
+    bool ishamming(string a, string b)
+    {
+        int mismatches = 0;
+        if (a.size() >= b.size())
+        {
+            for (int i = 0; i < b.size(); i++)
+            {
+                if (tolower(a.at(i)) != tolower(b.at(i)) && a.at(i) != ' ')
+                {
+                    mismatches++;
+                }
+            }
+        }
+        if (a.size() < b.size())
+        {
+            for (int i = 0; i < a.size(); i++)
+            {
+                if (a.at(i) != b.at(i))
+                {
+                    mismatches++;
+                }
+            }
+        }
+        return mismatches < threshold;
+    }
+    int brute_check(vector<char> txt2, vector<char> txt)
+    {
+        string text = "", pattern = "";
+        if (txt2.size() > txt.size())
+        {
+            for (int i = 0; i < txt.size(); i++)
+            {
+                pattern += txt[i];
+            }
+            for (int j = 0; j < txt2.size(); j++)
+            {
+                text += txt2[j];
+            }
+        }
+        else if (txt2.size() <= txt.size())
+        {
+            for (int i = 0; i < txt.size(); i++)
+            {
+                text += txt[i];
+            }
+            for (int j = 0; j < txt2.size(); j++)
+            {
+                pattern += txt2[j];
+            }
+        }
+        int count = 0;
+
+
+
+        for (int j = 0; j <= text.length() - pattern.length(); j++)
+        {
+            string temp = "";
+            temp = text.substr(j, pattern.length());
+            if (ishamming(pattern, temp))
+            {
+
+                return j;
+            }
+        }
+
+        return -999;
+
+    }
+    vector<char> const getsentence_filex(int i)
+    {
+        vector<char> tempv;
+        int sentencecount = 0, end = -999, l = 0;
+        for (int i = 0; i < filex.size(); i++)
+        {
+            if (filex.at(i) == '.' || filex.at(i) == '?' || filex.at(i) == ',' || filex.at(i) == ';' || filex.at(i) == '!' || filex.at(i) == ':')
+            {
+                sentencecount++;
+                if (sentencecount == i)
+                {
+                    end = i - 1;
+                }
+            }
+
+        }
+
+        if (end != -999)
+        {
+            int j = end;
+            while (j >= 0 && filex.at(j) != '.' && filex.at(j) != '?' && filex.at(j) != ',' && filex.at(j) != ';' && filex.at(j) != '!' && filex.at(j) != ':')
+            {
+                j--;
+            }
+            j++;
+            while (filex.at(j) == ' ')
+            {
+                j++;
+            }
+            while (filex.at(end) == ' ')
+            {
+                end--;
+            }
+            for (int i = j; i <= end; i++)
+            {
+                tempv.push_back(filex[i]);
+            }
+            return tempv;
+        }
+
+
+
+    }
+    vector<char> const getsentence_filey(int i)
+    {
+        vector<char> tempv;
+        int sentencecount = 0, end = -999, l = 0;
+        for (int i = 0; i < filey.size(); i++)
+        {
+            if (filey.at(i) == '.' || filey.at(i) == '?' || filey.at(i) == ',' || filey.at(i) == ';' || filey.at(i) == '!' || filey.at(i) == ':')
+            {
+                sentencecount++;
+                if (sentencecount == i)
+                {
+                    end = i - 1;
+                }
+            }
+
+        }
+
+        if (end != -999)
+        {
+            int j = end;
+            while (j >= 0 && filey.at(j) != '.' && filey.at(j) != '?' && filey.at(j) != ',' && filey.at(j) != ';' && filey.at(j) != '!' && filey.at(j) != ':')
+            {
+                j--;
+            }
+            j++;
+            while (filey.at(j) == ' ')
+            {
+                j++;
+            }
+            while (filey.at(end) == ' ')
+            {
+                end--;
+            }
+            for (int i = j; i <= end; i++)
+            {
+                tempv.push_back(filey[i]);
+            }
+            return tempv;
+        }
+
+
+    }
+    int const number_of_phrases_filex()
+    {
+        int count = 0;
+        for (int i = 0; i < filex.size(); i++)
+        {
+            if (filex.at(i) == '.' || filex.at(i) == '?' || filex.at(i) == ',' || filex.at(i) == ';' || filex.at(i) == '!' || filex.at(i) == ':')
+                count++;
+        }
+        return count;
+    }
+    int const number_of_phrases_filey()
+    {
+        int count = 0;
+        for (int i = 0; i < filey.size(); i++)
+        {
+            if (filey.at(i) == '.' || filey.at(i) == '?' || filey.at(i) == ',' || filey.at(i) == ';' || filey.at(i) == '!' || filey.at(i) == ':')
+                count++;
+        }
+        return count;
+    }
+    void push_plagiarized_indexes(int sentencex, int sentencey, int index_x, int index_y)
+    {
+        index temp;
+        temp.sentence_x = sentencex;
+        temp.sentence_y = sentencey;
+        temp.index_x = index_x;
+        temp.index_y = index_y;
+        plagiarised_sentences.push_back(temp);
+    }
+    vector<char>getfilexvector()
+    {
+        return filex;
+    }
+    vector<char>getfileyvector()
+    {
+        return filey;
+    }
+};
+
 int main()
 {
     brute_force a("dscc.txt", "kpvsd.txt", 2);
