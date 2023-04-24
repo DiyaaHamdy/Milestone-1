@@ -7,26 +7,59 @@
 #include <fstream>
 
 
-using namespace std;
-//no need for inheritance if objects can differ
-//the name of the parent class
+
 
 template <typename T>
 class file {
 private:
-	ifstream x, y; 
+	ifstream file_x, file_y;
 
 public:
-	virtual T readFile();
-	ifstream& getX();
-	ifstream& getY();
-	void setX(string fileName);
-	void setY(string fileName);
+
+	virtual T readFile() = 0;
+	ifstream& const getFile_x();
+	ifstream& const getFile_y();
+	void setFile_x(string fileName);
+	void setFile_y(string fileName);
 };
 
+
 template <typename T>
-class RabinKarp : public file<T>{
-private: 
+class brute_force :public file<T>
+{
+private:
+	struct index
+	{
+		int sentence_x, sentence_y, index_x, index_y;
+	};
+
+	vector<char> filex, filey;
+	vector<index>plagiarised_sentences;
+	int threshold;
+public:
+
+
+
+	brute_force(string xfilename, string yfilename, int t);
+	void readFile();
+	bool ishamming(string a, string b);
+	int brute_check(vector<char> txt2, vector<char> txt);
+	vector<char> const getsentence_filex(int i);
+	vector<char> const getsentence_filey(int i);
+	int const number_of_phrases_filex();
+	int const number_of_phrases_filey();
+	void push_plagiarized_indexes(int sentencex, int sentencey, int index_x, int index_y);
+	index const getIndex(int ind);
+	vector<char> const getfilexvector();
+	vector<char> const getfileyvector();
+	
+
+};
+
+
+template <typename T>
+class RabinKarp : public file<T> {
+private:
 	int hash;
 	int words;
 	int mainIndex;
@@ -53,9 +86,10 @@ private:
 	unordered_map<string, string> found{};
 public:
 	RabinKarp();
-	int hashFunction(string str, long long  p, long long x); //will be coded inside each function but it will be the same code
-	virtual string removeSpaces(string str, int& i, int words) = 0;//phrases will use words and sentences will not 
-	virtual string calcBound(string str, int& i, int words) = 0;// both this and remove space will be coded in their class
+	virtual string readFile();
+	int hashFunction(string str, long long  p, long long x); 
+	virtual string removeSpaces(string str, int& i, int words) = 0;
+	virtual string calcBound(string str, int& i, int words) = 0;
 	void setHash(int x);
 	void setWords(int x);
 	void setMainIndex(int x);
@@ -79,29 +113,29 @@ public:
 	void setC3SplitPrint(int hashValue, string corpusFile);
 	void setFound(string corpusFile, string mainFile);
 
-	int const getHash  ();
-	int const getWords  ();
-	int const getMainIndex ();
-	int const getCorpus1Index ();
-	int const getCorpus2Index ();
-	int const getCorpus3Index ();
-	int const getMainIndexPrint ();
-	int const getCorpus1IndexPrint ();
-	int const getCorpus2IndexPrint ();
-	int const getCorpus3IndexPrint ();
-	string const getMainFile ();
-	string const getCorpusFile ();
-	bool const getIsMatch ();
+	int const getHash(string str);
+	int const getWords();
+	int const getMainIndex();
+	int const getCorpus1Index();
+	int const getCorpus2Index();
+	int const getCorpus3Index();
+	int const getMainIndexPrint();
+	int const getCorpus1IndexPrint();
+	int const getCorpus2IndexPrint();
+	int const getCorpus3IndexPrint();
+	string const getMainFile();
+	string const getCorpusFile();
+	bool const getIsMatch();
 
-	unordered_map<int, string> const getMainSplit ();
-	unordered_map<int, string> const getMainSplitPrint ();
-	unordered_map<int, string> const getC1Split ();
-	unordered_map<int, string> const getC1SplitPrint ();
-	unordered_map<int, string> const getC2Split ();
-	unordered_map<int, string> const getC2SplitPrint ();
-	unordered_map<int, string> const getC3Split ();
-	unordered_map<int, string> const getC3SplitPrint ();
-	unordered_map<string, string> const getFound ();
+	unordered_map<int, string> const getMainSplit(int hashValue);
+	unordered_map<int, string> const getMainSplitPrint(int hashValue);
+	unordered_map<int, string> const getC1Split(int hashValue);
+	unordered_map<int, string> const getC1SplitPrint(int hashValue);
+	unordered_map<int, string> const getC2Split(int hashValue);
+	unordered_map<int, string> const getC2SplitPrint(int hashValue);
+	unordered_map<int, string> const getC3Split(int hashValue);
+	unordered_map<int, string> const getC3SplitPrint(int hashValue);
+	unordered_map<string, string> const getFound(string strC);
 
 
 
@@ -114,10 +148,10 @@ class Phrases : public RabinKarp<T> {
 public:
 	Phrases();
 	int numberOfPhrases(int length, int phrases);
-	unordered_map<string, string> rabinKarpPolyPhrases(string main, string c1, string c2, string c3, int words); //Polynomial
-	unordered_map<string, string> rabinKarpFingerPrintPhrases(string main, string c1, string c2, string c3, int words); //FingerPrint
+	unordered_map<string, string> rabinKarpPolyPhrases(string main, string c1, string c2, string c3, int words); 
+	unordered_map<string, string> rabinKarpFingerPrintPhrases(string main, string c1, string c2, string c3, int words); 
 
-	
+
 };
 
 
@@ -126,7 +160,7 @@ class Sentences : public RabinKarp<T> {
 public:
 	Sentences();
 	int numberOfSentences(string str);
-	unordered_map<string, string> rabinKarpPolySentences(string main, string c1, string c2, string c3); //Polynomial
-	unordered_map<string, string> rabinKarpFingerPrintSentences(string main, string c1, string c2, string c3); //FingerPrint
+	unordered_map<string, string> rabinKarpPolySentences(string main, string c1, string c2, string c3); 
+	unordered_map<string, string> rabinKarpFingerPrintSentences(string main, string c1, string c2, string c3); 
 };
 
