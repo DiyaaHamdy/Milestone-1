@@ -573,87 +573,7 @@ void similarityPercent(string main, string c1, string c2, string c3) {
 
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////MAIN FUNCTION//////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-int main() {
-
-    //map
-    unordered_map<string, string> found = {};
-    unordered_map<string, string> foundPoly4Phrases = {};
-    unordered_map<string, string> foundPoly3Phrases = {};
-    unordered_map<string, string> foundPoly2Phrases = {};
-
-
-    unordered_map<string, string> foundPolySentences = {};
-
-
-
-    //files
-    ifstream c1F("Corp1.txt");
-    string c1 = get(&c1F);
-
-    ifstream c2F("c2.txt");
-    string c2 = get(&c2F);
-
-    ifstream c3F("c3.txt");
-    string c3 = get(&c3F);
-
-    ifstream infile("Sus.txt");
-    string main = get(&infile);
-
-
-    //found = rabinKarp(main, c1, c2, c3);
-    foundPoly4Phrases = rabinKarpPolyPhrases(main, c1, c2, c3, 4);
-    foundPoly3Phrases = rabinKarpPolyPhrases(main, c1, c2, c3, 3);
-    foundPoly2Phrases = rabinKarpPolyPhrases(main, c1, c2, c3, 2);
-    //still need to fix in sentences
-    foundPolySentences = rabinKarpPolySentences(main, c1, c2, c3);
-
-
-    //fingerprint
-    //figure out how to writw this normally 
-  /* for (auto it = found.begin(); it != found.end(); it++) {
-       cout << it->first << '\t' << it->second << endl;
-
-   }*/
-
-
-   //need to create a print function
-  //foundPolyPhrases print 
-    for (auto it = foundPoly4Phrases.begin(); it != foundPoly4Phrases.end(); it++) {
-        cout << it->first << '\t' << it->second << endl;
-
-    }
-
-    for (auto it = foundPoly3Phrases.begin(); it != foundPoly3Phrases.end(); it++) {
-        cout << it->first << '\t' << it->second << endl;
-
-    }
-
-    for (auto it = foundPoly2Phrases.begin(); it != foundPoly2Phrases.end(); it++) {
-        cout << it->first << '\t' << it->second << endl;
-
-    }
-
-    //foundPolySentences print 
-    for (auto it = foundPolySentences.begin(); it != foundPolySentences.end(); it++) {
-        cout << it->first << '\t' << it->second << endl;
-
-    }
-
-    similarityPercent(main, c1, c2, c3);
-
-    //Now I have:
-    //Jaccard sim working but i need to understand it
-    //RK is working with the things need to find a nice way to priont 
-    // loop i think is solved
-    //multiple docs either need to be the same size or I would need to use seperate fucntion or smth else idk yet
-
-
-}
 
 void stringmatching(brute_force& a, vector<char> pattern, int index)
 {
@@ -1025,8 +945,87 @@ public:
     }
 };
 
-int main()
-{
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////MAIN FUNCTION//////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+int main() {
+
+    //map
+    unordered_map<string, string> found = {};
+    unordered_map<string, string> foundPoly4Phrases = {};
+    unordered_map<string, string> foundPoly3Phrases = {};
+    unordered_map<string, string> foundPoly2Phrases = {};
+
+
+    unordered_map<string, string> foundPolySentences = {};
+
+
+
+    //files
+    ifstream c1F("Corp1.txt");
+    string c1 = get(&c1F);
+
+    ifstream c2F("c2.txt");
+    string c2 = get(&c2F);
+
+    ifstream c3F("c3.txt");
+    string c3 = get(&c3F);
+
+    ifstream infile("Sus.txt");
+    string main = get(&infile);
+
+
+    //found = rabinKarp(main, c1, c2, c3);
+    foundPoly4Phrases = rabinKarpPolyPhrases(main, c1, c2, c3, 4);
+    foundPoly3Phrases = rabinKarpPolyPhrases(main, c1, c2, c3, 3);
+    foundPoly2Phrases = rabinKarpPolyPhrases(main, c1, c2, c3, 2);
+    //still need to fix in sentences
+    foundPolySentences = rabinKarpPolySentences(main, c1, c2, c3);
+
+
+    //fingerprint
+    //figure out how to writw this normally 
+  /* for (auto it = found.begin(); it != found.end(); it++) {
+       cout << it->first << '\t' << it->second << endl;
+
+   }*/
+
+
+   //need to create a print function
+  //foundPolyPhrases print 
+    for (auto it = foundPoly4Phrases.begin(); it != foundPoly4Phrases.end(); it++) {
+        cout << it->first << '\t' << it->second << endl;
+
+    }
+
+    for (auto it = foundPoly3Phrases.begin(); it != foundPoly3Phrases.end(); it++) {
+        cout << it->first << '\t' << it->second << endl;
+
+    }
+
+    for (auto it = foundPoly2Phrases.begin(); it != foundPoly2Phrases.end(); it++) {
+        cout << it->first << '\t' << it->second << endl;
+
+    }
+
+    //foundPolySentences print 
+    for (auto it = foundPolySentences.begin(); it != foundPolySentences.end(); it++) {
+        cout << it->first << '\t' << it->second << endl;
+
+    }
+
+    similarityPercent(main, c1, c2, c3);
+
+    //Now I have:
+    //Jaccard sim working but i need to understand it
+    //RK is working with the things need to find a nice way to priont 
+    // loop i think is solved
+    //multiple docs either need to be the same size or I would need to use seperate fucntion or smth else idk yet
+
+
     brute_force a("dscc.txt", "kpvsd.txt", 2);
     plagiarism_check(a);
+    
 }
